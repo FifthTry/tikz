@@ -1,0 +1,65 @@
+{
+	"info": {
+		"_postman_id": "f9991ef1-2623-4d79-82ff-53b92bd27971",
+		"name": "rendocker",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "tikz-png",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\\documentclass[tikz,border=10pt]{standalone}\n\\usetikzlibrary{calc}\n\n\\tikzset{3D/.cd,\n  x/.store in=\\xx, x=0,\n  y/.store in=\\yy, y=0,\n  z/.store in=\\zz, z=0\n}\n\n\\tikzdeclarecoordinatesystem{3D}{%\n  \\tikzset{3D/.cd,#1}%\n  \\pgfpoint{sin(\\yy)*(\\xx)}{-((\\xx)/75)^2+(\\zz)/100*(\\xx)}%\n}\n\n\\begin{document}\n\\begin{tikzpicture}[line join=round, very thin]\n  \\def\\e{1260}\n  \\foreach \\x [evaluate={\\i=mod(\\x+90,360); \\j=int((\\i<180)*2-1); \\t=3;\n    \\sc=\\x/\\e; \\n=int((\\e-\\x)/15+5); \\X=\\x/\\e;}] in {10,25,...,\\e} {\n\n    \\path [shift={(3D cs:x=\\x-\\t,y={3*sin(\\x-\\t)})}, yslant=cos(\\x)/5]\n      (-\\X/2, 0)   coordinate (A')  ( \\X/2, 0)   coordinate (B')\n      ( \\X/2,2*\\X) coordinate (C')  (-\\X/2,2*\\X) coordinate (D');\n\n    \\path [shift={(3D cs:x=\\x,y=3*sin \\x)}, yslant=cos(\\x)/5]\n      (-\\X/2, 0)   coordinate (A) ( \\X/2, 0)   coordinate (B)\n      ( \\X/2,2*\\X) coordinate (C) (-\\X/2,2*\\X) coordinate (D);\n\n    \\filldraw [black!90] (B) -- (B') -- (C') -- (C)  -- cycle;\n    \\filldraw [black!80] (A) -- (A') -- (D') -- (D)  -- cycle;\n    \\filldraw [black!70] (C) -- (D)  -- (D') -- (C') -- cycle;\n    \\filldraw [black]    (A) -- (B)  -- (C)  -- (D)  -- cycle;\n\n    \\node [text=white, shift={($(C)!0.5!(D)$)}, anchor=north,\n      yslant=cos(\\x)/5, font=\\sf, scale=\\sc*1.5] at (0,-.33*\\X) {\\n};\n  }\n  %\n  \\foreach \\i [evaluate={\\x=\\i*30-10; \\X=1; \\n=int(5-\\i); \\xsl=\\x/180}]\n    in {1,...,4} {\n\n    \\path [shift={(3D cs:x=\\x+\\e,y=-3*\\x/90)}, yslant=cos \\e/5, xslant=\\xsl]\n      (-\\X/2, 0)           coordinate (A) ( \\X/2, 0)           coordinate (B)\n      ( \\X/2, \\X*2-\\x/360) coordinate (C) (-\\X/2, \\X*2-\\x/360) coordinate (D);\n\n    \\path [shift={(3D cs:x=\\x+\\e,y=-3*\\x/90)}, shift={(5/50,5/50-\\i*2/50)},\n      yslant=cos \\e/5, xslant=\\xsl]\n      (-\\X/2, 0)           coordinate (A') ( \\X/2, 0)           coordinate (B')\n      ( \\X/2, \\X*2-\\x/330) coordinate (C') (-\\X/2, \\X*2-\\x/330) coordinate (D');\n\n    \\filldraw [black!70] (C) -- (D)  -- (D') -- (C') -- cycle;\n    \\filldraw [black!70] (A) -- (B)  -- (B') -- (A') -- cycle;\n    \\filldraw [black!90] (B) -- (B') -- (C') -- (C)  -- cycle;\n    \\filldraw [black]    (A) -- (B)  -- (C)  -- (D)  -- cycle;\n\n    \\node [text=white, shift={($(C)!0.5!(D)$)}, anchor=north, xslant=\\xsl,\n      yslant=cos \\e/5, font=\\sf, scale=1.5] at (0,-.33*\\X) {\\n};\n  }\n\\end{tikzpicture}\n\\end{document}",
+					"options": {
+						"raw": {
+							"language": "text"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/tikz",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"tikz"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "f6268889-5ca9-4550-9ba7-b187ae311d8a",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "97288e16-eaf9-4775-9580-e78ee97dd942",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "4d0adb2b-09b9-4ec1-822d-667a412c24f9",
+			"key": "URL",
+			"value": "http://65.0.200.84"
+		}
+	],
+	"protocolProfileBehavior": {}
+}
