@@ -1,0 +1,9 @@
+rm -rf *.aux
+rm -rf *.log
+rm -rf *.gnuplot
+rm -rf *.nav
+rm -rf *.pdf
+rm -rf *.vrb
+rm -rf *.toc
+rm -rf *.snm
+rm -rf *.out
