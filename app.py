@@ -2,13 +2,15 @@ import uuid
 
 from flask import Flask, request, send_file
 from command import tikz
+from command.utils import run_command
 
 app = Flask(__name__)
 
 
 @app.route('/')
 def hello_world():
-    return 'Hello, World!'
+    output = run_command("ping www.google.com")
+    return output
 
 
 @app.route('/tikz', methods=['POST'])
@@ -36,4 +38,7 @@ def tikz_output():
 
     return 'failure'
 
+
+if __name__ == '__main__':
+    app.run()
 
