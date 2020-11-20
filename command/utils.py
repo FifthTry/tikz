@@ -6,19 +6,18 @@ from subprocess import Popen, PIPE, TimeoutExpired
 #     (output, err) = p.communicate(timeout=timeout)
 #     return output, err
 
-def run_command(cmd, timeout=5):
+def run_command(cmd, timeout=40):
 
-    try:
-        with Popen(cmd.split(), stdout=PIPE, stderr=PIPE) as ps_process:
+    with Popen(cmd.split(), stdout=PIPE, stderr=PIPE) as ps_process:
+        try:
             success, _ = ps_process.communicate(timeout=timeout)
-
-    except TimeoutExpired as e:
-        print("------" + str(e))
-        ps_process.kill()
-        success = "Timeout"
-    except Exception as e:
-        print("------" + str(e))
-        ps_process.kill()
-        success = "Exception"
+        except TimeoutExpired as e:
+            print("------" + str(e))
+            ps_process.kill()
+            success = "Timeout"
+        except Exception as e:
+            print("------" + str(e))
+            ps_process.kill()
+            success = "Exception"
 
     return success
