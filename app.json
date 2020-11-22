@@ -1,0 +1,9 @@
+{
+  "name": "tikz",
+  "description": "Deploy tikz",
+  "repository": "https://github.com/fifthtry/tikz",
+  "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Neighbourhood_definition2.svg/1200px-Neighbourhood_definition2.svg.png",
+  "website": "https://github.com/fifthtry/tikz",
+  "keywords": ["tikz"],
+  "stack": "container"
+}
