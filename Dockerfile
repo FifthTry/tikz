@@ -8,4 +8,4 @@ COPY mime.txt /app/
 COPY output.txt /app/
 COPY tikz_run.sh /app/
 
-ENTRYPOINT ["flask", "run", "--host=0.0.0.0"]
+ENTRYPOINT ["python", "app.py"]
