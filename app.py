@@ -1,63 +1,66 @@
-import uuid
-
+import os
 from flask import Flask, request, send_file
-from command import tikz, utils
-from command.utils import run_command
+from subprocess import Popen, PIPE, TimeoutExpired
 
 app = Flask(__name__)
+port = int(os.environ.get("PORT", 5000))
 
 
-# @app.route('/simple', methods=['POST'])
-# def simple():
-#     open(
-#         open('file.txt').read().strip(), 'w'
-#     ).write(request.data)
-#
-#     # Run the command
-#     output = run_command(
-#         open('cmd.txt').read().strip()
-#     )
-#
-#     return send_file(
-#         open('output.txt').read().strip(),
-#         mimetype=open('mime.txt').read().strip()
-#     )
+def run_command(cmd, timeout=40):
+    print("Running command %s" % (cmd))
+    with Popen(cmd, stdout=PIPE, stderr=PIPE, shell=True) as ps_process:
+        try:
+            success, err = ps_process.communicate(timeout=timeout)
+            if success or not err:
+                success = 'true'
+            print('Command(%s) Error(%s)' % (cmd, err))
+        except TimeoutExpired as e:
+            print("TimeoutException " + str(e))
+            ps_process.kill()
+            success = "Timeout"
+        except Exception as e:
+            print("Exception " + str(e))
+            ps_process.kill()
+            success = "Exception"
+
+    return success
+
+
+def read_file(name, mode='r'):
+    return open(name, mode).read().strip()
+
+
 @app.route('/simple', methods=['POST'])
 def simple():
-    """
-    Simple API which will capture the request.data
-    and return the output from the file.
-    :return:
-    """
-    # Write the request body into temp file.
-    with open('file.txt') as request_file:
-        request_file_name = request_file.read().strip()
-        with open(request_file_name, 'wb') as request_file_body:
-            request_file_body.write(request.data)
+    open(
+        read_file('file.txt'),
+        mode="wb"
+    ).write(
+        bytes(request.form.get('body_data', ''), 'utf-8')
+    )
 
-    # Get the command to be executed and execute it.
-    with open('cmd.txt') as cmd_file:
-        # Run provided command.
-        command = cmd_file.read().strip()
-        print("Inititing the execution for the command {}".format(command))
-        utils.run_command(command)
-        print("Executed command {} for request data {}".format(
-            command, request.data
-        ))
+    run_command(read_file('cmd.txt'))
+    return send_file(
+        read_file("output.txt"),
+        mimetype=read_file("mime.txt")
+    )
 
-    # Get the output of the command executed and return it.
-    with open('output.txt') as output_file:
-        output_file_name = output_file.read().strip()
-        # Get mimetype to be returned from file.
-        with open('mime.txt') as mime_text_file:
-            mime_text = mime_text_file.read().strip()
-            return send_file(
-                output_file_name,
-                mimetype=mime_text
-            )
 
-    return "failure"
+@app.route('/')
+def code():
+    with open('sample-text.txt') as file_data:
+        code = file_data.read()
+    return f"""
+        <html>
+            <body>
+                <form action='/simple' method="POST" id="form1">
+                    <textarea name="body_data" style="height: 500px; width: 500px;" form="form1" >{str(code)}</textarea>
+                    <br />
+                    <input type="submit" >
+                </form>
+            </body>
+        </html>"""
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', port=port)
